@@ -1,4 +1,4 @@
-module github.com.ashoreDove.common
+module github.com/ashoreDove/common
 
 go 1.18
 
