@@ -7,6 +7,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/micro/go-micro/v2/config"
 	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-micro/v2/util/log"
 	"github.com/micro/go-plugins/registry/consul/v2"
 	"math/rand"
 	"strconv"
@@ -66,4 +67,16 @@ func Init() (*MicroOptions, error) {
 		ConsulRegister: &consulRegister,
 		DB:             db,
 	}, nil
+}
+
+//string转json再转map[string]interface{}
+func HttpJsonToMap(body string) (*map[string]interface{}, error) {
+	var post map[string]interface{}
+	err := json.Unmarshal([]byte(body), &post)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	param := post["params"].(map[string]interface{})
+	return &param, nil
 }
