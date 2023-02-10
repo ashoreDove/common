@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/jlaffaye/ftp"
 	"github.com/micro/go-micro/v2/config"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/util/log"
@@ -39,7 +38,7 @@ type MicroOptions struct {
 	ConsulCfg      *config.Config
 	ConsulRegister *registry.Registry
 	DB             *gorm.DB
-	FtpConn        *ftp.ServerConn
+	//FtpConn        *ftp.ServerConn
 }
 
 func Init() (*MicroOptions, error) {
@@ -65,20 +64,20 @@ func Init() (*MicroOptions, error) {
 		return nil, err
 	}
 	//ftp服务
-	ftpCfg, err := GetMysqlFromConsul(consulCfg, "ftp")
-	conn, err := ftp.Dial(ftpCfg.Host + ":" + strconv.FormatInt(mysqlInfo.Port, 10))
-	if err != nil {
-		return nil, err
-	}
-	err = conn.Login(ftpCfg.User, ftpCfg.Pwd)
-	if err != nil {
-		return nil, err
-	}
+	//ftpCfg, err := GetFtpFromConsul(consulCfg, "ftp")
+	//conn, err := ftp.Dial(ftpCfg.Host + ":" + strconv.FormatInt(mysqlInfo.Port, 10))
+	//if err != nil {
+	//	return nil, err
+	//}
+	//err = conn.Login(ftpCfg.User, ftpCfg.Pwd)
+	//if err != nil {
+	//	return nil, err
+	//}
 	return &MicroOptions{
 		ConsulCfg:      &consulCfg,
 		ConsulRegister: &consulRegister,
 		DB:             db,
-		FtpConn:        conn,
+		//FtpConn:        conn,
 	}, nil
 }
 
