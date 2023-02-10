@@ -67,7 +67,7 @@ func Init(openFtp ...bool) (*MicroOptions, error) {
 	//ftp服务
 	if len(openFtp) > 0 && openFtp[0] {
 		ftpCfg, err := GetFtpFromConsul(consulCfg, "ftp")
-		conn, err := ftp.Dial(ftpCfg.Host + ":" + strconv.FormatInt(mysqlInfo.Port, 10))
+		conn, err := ftp.Dial(ftpCfg.Host + ":" + strconv.FormatInt(ftpCfg.Port, 10))
 		if err != nil {
 			return nil, err
 		}
