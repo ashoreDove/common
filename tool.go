@@ -43,15 +43,6 @@ type MicroOptions struct {
 }
 
 func Init() (*MicroOptions, error) {
-	//ftp服务
-	conn, err := ftp.Dial("172.19.80.1:21")
-	if err != nil {
-		return nil, err
-	}
-	err = conn.Login("anonymous", "anonymous")
-	if err != nil {
-		return nil, err
-	}
 	//配置中心
 	consulCfg, err := GetConsulConfig("127.0.0.1", 8500, "/micro/config")
 	if err != nil {
@@ -70,6 +61,16 @@ func Init() (*MicroOptions, error) {
 	db, err := gorm.Open("mysql", mysqlInfo.User+":"+mysqlInfo.Pwd+
 		"@tcp("+mysqlInfo.Host+":"+strconv.FormatInt(mysqlInfo.Port, 10)+
 		")/"+mysqlInfo.Database+"?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		return nil, err
+	}
+	//ftp服务
+	ftpCfg, err := GetMysqlFromConsul(consulCfg, "ftp")
+	conn, err := ftp.Dial(ftpCfg.Host + ":" + strconv.FormatInt(mysqlInfo.Port, 10))
+	if err != nil {
+		return nil, err
+	}
+	err = conn.Login(ftpCfg.User, ftpCfg.Pwd)
 	if err != nil {
 		return nil, err
 	}
