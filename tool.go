@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/jlaffaye/ftp"
 	"github.com/micro/go-micro/v2/config"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/util/log"
@@ -38,9 +39,19 @@ type MicroOptions struct {
 	ConsulCfg      *config.Config
 	ConsulRegister *registry.Registry
 	DB             *gorm.DB
+	FtpConn        *ftp.ServerConn
 }
 
 func Init() (*MicroOptions, error) {
+	//ftp服务
+	conn, err := ftp.Dial("172.19.80.1:21")
+	if err != nil {
+		return nil, err
+	}
+	err = conn.Login("anonymous", "anonymous")
+	if err != nil {
+		return nil, err
+	}
 	//配置中心
 	consulCfg, err := GetConsulConfig("127.0.0.1", 8500, "/micro/config")
 	if err != nil {
@@ -66,6 +77,7 @@ func Init() (*MicroOptions, error) {
 		ConsulCfg:      &consulCfg,
 		ConsulRegister: &consulRegister,
 		DB:             db,
+		FtpConn:        conn,
 	}, nil
 }
 
